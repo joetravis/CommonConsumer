@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,5 +27,10 @@ public class ConsumerController {
     @Transactional(readOnly = true)
     public @ResponseBody Consumer getConsumer(@PathVariable Long consumerId) {
         return consumerService.byId(consumerId);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody Consumer addConsumer(@RequestBody Consumer consumer) {
+        return consumerService.save(consumer);
     }
 }

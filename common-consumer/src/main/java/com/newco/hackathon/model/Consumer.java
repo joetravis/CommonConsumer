@@ -15,7 +15,8 @@ public class Consumer {
     private String firstName;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = true)
+    @GeneratedValue()
     private Long id;
 
     @Column(name = "last_name", nullable = false)

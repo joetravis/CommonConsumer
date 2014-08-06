@@ -17,4 +17,7 @@ public class ConsumerService {
         return consumerRepository.findOne(id);
     }
 
+    public Consumer save(Consumer consumer) {
+        return consumerRepository.save(consumer);
+    }
 }
