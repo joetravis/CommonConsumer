@@ -1,6 +1,7 @@
 package com.newco.hackathon.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,17 +36,14 @@ public class Consumer {
     @NotNull(message = "lastName cannot be null.")
     private String lastName;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "consumer", targetEntity = Address.class)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "consumer", targetEntity = Address.class)
     private Address address;
 
-    @Transient
-    @JsonIgnore
+    @Column(name = "ssn_hash", nullable = true)
     private String ssn;
 
-    @Column(name = "ssn_hash", nullable = true)
-    private String ssnHash;
-
     @Column(name = "dob", nullable = true)
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date dob;
 
     @Column(name = "email", nullable = true)
@@ -105,13 +103,5 @@ public class Consumer {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getSsnHash() {
-        return ssnHash;
-    }
-
-    public void setSsnHash(String ssnHash) {
-        this.ssnHash = ssnHash;
     }
 }
