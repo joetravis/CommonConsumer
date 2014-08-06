@@ -21,5 +21,4 @@ public class ControllerConfig {
         return requestMappingHandlerAdapter;
     }
 
-
 }

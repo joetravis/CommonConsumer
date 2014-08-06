@@ -6,16 +6,21 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.newco.hackathon.configuration.ControllerConfig;
 import com.newco.hackathon.configuration.DataSourceConfig;
+import com.newco.hackathon.configuration.HibernateConfig;
+import com.newco.hackathon.repository.ConsumerRepository;
 
 @Configuration
 @EnableAutoConfiguration
 @EnableWebMvc
-@ComponentScan({ "com.newco.hackathon.controller" })
-@Import({ ControllerConfig.class, DataSourceConfig.class })
+@EnableJpaRepositories(basePackageClasses = { ConsumerRepository.class })
+@ComponentScan({ "com.newco.hackathon.controller",
+        "com.newco.hackathon.service" })
+@Import({ ControllerConfig.class, DataSourceConfig.class, HibernateConfig.class })
 @PropertySource("classpath:META-INF/jdbc.properties")
 public class RestApplication {
 
