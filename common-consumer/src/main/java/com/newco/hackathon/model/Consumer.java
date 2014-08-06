@@ -30,7 +30,7 @@ public class Consumer {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "consumer", targetEntity = Address.class)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "consumer", targetEntity = Address.class)
     private Address address;
 
     @Column(name = "ssn_hash", nullable = true)
