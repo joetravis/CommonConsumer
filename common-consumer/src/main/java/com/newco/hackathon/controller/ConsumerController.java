@@ -1,7 +1,7 @@
 package com.newco.hackathon.controller;
 
-import javax.inject.Inject;
-
+import com.newco.hackathon.model.Consumer;
+import com.newco.hackathon.service.ConsumerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.newco.hackathon.model.Consumer;
-import com.newco.hackathon.service.ConsumerService;
+import javax.inject.Inject;
 
 @RestController
 @RequestMapping("/consumers")
@@ -31,6 +30,12 @@ public class ConsumerController {
 
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Consumer addConsumer(@RequestBody Consumer consumer) {
-        return consumerService.save(consumer);
+        try {
+            return consumerService.save(consumer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
