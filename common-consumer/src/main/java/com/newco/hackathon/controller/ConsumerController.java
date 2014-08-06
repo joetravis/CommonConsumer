@@ -49,7 +49,44 @@ public class ConsumerController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public @ResponseBody Consumer addConsumer(@RequestBody Consumer consumer) {
-        return consumerService.save(consumer);
+    public @ResponseBody ResponseEntity createConsumer(
+            @Valid @RequestBody final Consumer consumer,
+            final BindingResult bindingResult) throws Exception {
+        return new ResponseEntity(consumerService.save(consumer), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{consumerId}", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity deleteConsumer(@PathVariable Long consumerId) {
+        Consumer foundConsumer = consumerService.byId(consumerId);
+
+        if (foundConsumer == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        consumerService.remove(foundConsumer);
+
+        return new ResponseEntity(foundConsumer, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{consumerId}", method = RequestMethod.PUT)
+    public @ResponseBody ResponseEntity updateConsumer(
+            @PathVariable Long consumerId,
+            @RequestBody Consumer consumer) throws Exception {
+        Consumer foundConsumer = consumerService.byId(consumerId);
+
+        if (foundConsumer == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        consumer.setId(foundConsumer.getId());
+
+        consumerService.save(consumer);
+
+        return new ResponseEntity(foundConsumer, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String handleValidationException(ConstraintViolationException ex, HttpServletRequest request) throws JsonProcessingException {
+        return errorService.formatError(ex.getConstraintViolations());
     }
 }
