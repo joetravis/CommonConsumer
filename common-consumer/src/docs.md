@@ -20,6 +20,8 @@ And some code with no highlighting:
 ## HTTP Status Code Summary
 + **200** OK - Everything worked as expected.
 
++ **201** Created - Everything worked and a new resource was created.
+
 + **400** Bad Request - Often missing a required parameter.
 
 + **401** Unauthorized - No valid API key provided.
@@ -28,7 +30,7 @@ And some code with no highlighting:
 
 + **404** Not Found - The requested item doesn't exist.
 
-+ **500, 502, 503, 504** Server errors - something went wrong on Stripe's end.
++ **500, 502, 503, 504** Server errors - something went wrong on the server.
 
 ```no-highlight
 hey
@@ -129,7 +131,7 @@ Get a consumer.
     }
 
 
-+ Response 201
++ Response 200
     
     + Headers
     
@@ -162,7 +164,19 @@ Get a consumer.
     + Body
 
             {
-                "error": "Invalid title"
+                "error": "Invalid consumer id"
+            }
+            
++ Response 404
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "error": "Consumer not found"
             }
 
 
@@ -193,7 +207,7 @@ Update a consumer
                 "email": "john.doe@test.com"
             }
 
-+ Response 201
++ Response 200
 
     + Headers
             
@@ -226,7 +240,19 @@ Update a consumer
     + Body
 
             {
-                "error": "Invalid title"
+                "error": "Invalid consumer id"
+            }
+            
++ Response 404
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "error": "Consumer not found"
             }
 
 ### Delete Consumer [DELETE]
@@ -241,7 +267,7 @@ Delete a consumer
     + Body
 
 
-+ Response 201
++ Response 200
     
     + Headers
     
@@ -274,7 +300,19 @@ Delete a consumer
     + Body
 
             {
-                "error": "Invalid title"
+                "error": "Invalid consumer id"
+            }
+    
++ Response 404
+
+    + Headers
+
+            Content-Type: application/json
+
+    + Body
+
+            {
+                "error": "Consumer not found"
             }
 
 ## Consumer Matching [/consumers/match]
@@ -354,5 +392,5 @@ Get a consumer match
     + Body
 
             {
-                "error": "Note not found"
+                "error": "Consumer not found"
             }
