@@ -1,7 +1,6 @@
 package com.newco.hackathon.configuration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -24,4 +23,5 @@ public class ControllerConfig {
         requestMappingHandlerAdapter.setMessageConverters(messageConverters);
         return requestMappingHandlerAdapter;
     }
+
 }
