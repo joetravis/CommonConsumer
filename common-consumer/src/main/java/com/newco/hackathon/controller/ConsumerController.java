@@ -15,7 +15,7 @@ import com.newco.hackathon.model.Consumer;
 @RequestMapping("/consumers")
 public class ConsumerController {
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{consumerId}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = true)
     public @ResponseBody Consumer getConsumer(@PathVariable Long consumerId) {
