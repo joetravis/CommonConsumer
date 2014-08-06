@@ -2,6 +2,7 @@ package com.newco.hackathon.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -42,4 +43,10 @@ public class ConsumerService {
         consumerElasticSearchRepository.save(consumer);
         return consumerRepository.save(consumer);
     }
+
+    public List<Consumer> byFirstName(String firstName) {
+        List<Consumer> consumers = consumerElasticSearchRepository.findByFirstName(firstName);
+        return consumers;
+    }
+
 }

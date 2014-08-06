@@ -1,7 +1,9 @@
 package com.newco.hackathon.controller;
 
-import com.newco.hackathon.model.Consumer;
-import com.newco.hackathon.service.ConsumerService;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
+import com.newco.hackathon.model.Consumer;
+import com.newco.hackathon.service.ConsumerService;
 
 @RestController
 @RequestMapping("/consumers")
@@ -38,4 +41,13 @@ public class ConsumerController {
 
         return null;
     }
+
+    @RequestMapping(value = "/search/{firstName}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = true)
+    public @ResponseBody List<Consumer> searchConsumers(
+            @PathVariable String firstName) {
+        return consumerService.byFirstName(firstName);
+    }
+
 }
