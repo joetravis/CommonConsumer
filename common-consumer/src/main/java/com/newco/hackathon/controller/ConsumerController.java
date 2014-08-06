@@ -1,5 +1,7 @@
 package com.newco.hackathon.controller;
 
+import com.newco.hackathon.model.ConsumerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,9 @@ import com.newco.hackathon.model.Consumer;
 @RequestMapping("/consumers")
 public class ConsumerController {
 
+    @Autowired
+    ConsumerRepository consumerRepository;
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = true)
@@ -22,6 +27,8 @@ public class ConsumerController {
         Consumer consumer = new Consumer();
         consumer.setFirstName("Bill");
         consumer.setLastName("Gates");
+        consumerRepository.save(consumer);
+
         return consumer;
     }
 

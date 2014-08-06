@@ -12,7 +12,10 @@ import com.newco.hackathon.configuration.DataSourceConfig;
 @Configuration
 @EnableAutoConfiguration
 @Import(DataSourceConfig.class)
-@PropertySources({ @PropertySource("classpath:META-INF/jdbc.properties") })
+@PropertySources({
+        @PropertySource("classpath:META-INF/jdbc.properties"),
+        @PropertySource("classpath:META-INF/hibernate.properties")
+})
 public class RestApplication {
 
     public static void main(String[] args) {
