@@ -1,5 +1,8 @@
 package com.newco.hackathon.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
-
-import org.springframework.data.elasticsearch.annotations.Document;
 
 @Entity
 @Table(schema = "consumer", name = "consumer")
@@ -36,6 +37,7 @@ public class Consumer {
     private String ssn;
 
     @Column(name = "dob", nullable = true)
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date dob;
 
     @Column(name = "email", nullable = true)
