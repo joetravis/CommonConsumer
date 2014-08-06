@@ -6,6 +6,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.newco.hackathon.model.Match;
 import com.newco.hackathon.service.ErrorService;
 import java.util.List;
 

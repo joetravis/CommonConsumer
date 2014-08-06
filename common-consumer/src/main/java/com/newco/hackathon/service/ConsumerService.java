@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.model.Consumer;
 import com.newco.hackathon.repository.ConsumerElasticSearchRepository;
 import com.newco.hackathon.repository.ConsumerRepository;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.DefaultResultMapper;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsMapper;
+import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
+import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 @Service
 public class ConsumerService {
@@ -41,6 +43,9 @@ public class ConsumerService {
 
     @Autowired
     private Client client;
+
+    private ResultsMapper resultsMapper = new DefaultResultMapper(new MappingElasticsearchConverter(
+            new SimpleElasticsearchMappingContext()).getMappingContext());
 
     @Transactional(readOnly = true)
     public Consumer byId(Long id) {
@@ -86,14 +91,17 @@ public class ConsumerService {
     public List<Consumer> byConsumer(Consumer consumer) {
 
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(fuzzyQuery("lastName", consumer.getLastName()))
+                .withQuery(fuzzyQuery("lastName", consumer.getLastName()).fuzziness(Fuzziness.TWO))
                 .withPageable(new PageRequest(0, 10))
                 .build();
 
+        SearchResponse response = client.prepareSearch("consumer")
+                .setQuery(searchQuery.getQuery())
+                .execute()
+                .actionGet();
 
-        Page<Consumer> consumers = elasticsearchTemplate.queryForPage(searchQuery, Consumer.class);
-
-        return consumers.getContent();
+        List<Consumer> results = resultsMapper.mapResults(response, Consumer.class, searchQuery.getPageable()).getContent();
+        return results;
     }
 
     public void remove(Consumer consumer) {
