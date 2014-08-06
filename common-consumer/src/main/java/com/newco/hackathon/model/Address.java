@@ -1,6 +1,7 @@
 package com.newco.hackathon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +14,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(schema = "consumer", name = "address")
+@Document(indexName = "consumer", type = "address", shards = 1, replicas = 0, indexStoreType = "memory", refreshInterval = "-1")
 public class Address {
 
+    @org.springframework.data.annotation.Id
     @Id
     @Column(name = "id", nullable = true)
     @GeneratedValue()
