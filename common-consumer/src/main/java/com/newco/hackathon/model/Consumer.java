@@ -10,10 +10,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Date;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
 @Entity
 @Table(schema = "consumer", name = "consumer")
+@Document(indexName = "consumer", type = "consumer", shards = 1, replicas = 0, indexStoreType = "memory", refreshInterval = "-1")
 public class Consumer {
 
+    @org.springframework.data.annotation.Id
     @Id
     @Column(name = "id", nullable = true)
     @GeneratedValue()
