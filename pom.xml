@@ -19,7 +19,7 @@
   </modules>
 
   <properties>
-    <appassembler.version>1.8</appassembler.version>
+    <appassembler.version>1.7</appassembler.version>
     <aspectj.version>1.7.4</aspectj.version>
     <bean.validation.version>1.1.0.Final</bean.validation.version>
     <commons.beanutils.version>1.9.1</commons.beanutils.version>

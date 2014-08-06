@@ -27,5 +27,4 @@ public class ConsumerController {
     public @ResponseBody Consumer getConsumer(@PathVariable Long consumerId) {
         return consumerService.byId(consumerId);
     }
-
 }
