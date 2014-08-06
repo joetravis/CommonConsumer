@@ -62,4 +62,7 @@ public class ConsumerService {
         return consumers;
     }
 
+    public void remove(Consumer consumer) {
+        consumerRepository.delete(consumer);
+    }
 }
