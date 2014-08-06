@@ -6,12 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(schema = "consumer", name = "consumer")
 public class Consumer {
 
     @Column(name = "first_name", nullable = false)
+    @NotNull(message = "firstName cannot be null.")
     private String firstName;
 
     @Id
@@ -20,6 +22,7 @@ public class Consumer {
     private Long id;
 
     @Column(name = "last_name", nullable = false)
+    @NotNull(message = "lastName cannot be null.")
     private String lastName;
 
     public String getFirstName() {

@@ -20,4 +20,8 @@ public class ConsumerService {
     public Consumer save(Consumer consumer) {
         return consumerRepository.save(consumer);
     }
+
+    public void remove(Consumer consumer) {
+        consumerRepository.delete(consumer);
+    }
 }
