@@ -1,7 +1,5 @@
 package com.newco.hackathon.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -31,12 +28,8 @@ public class Consumer {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "consumer", targetEntity = Address.class)
     private Address address;
 
-    @Transient
-    @JsonIgnore
-    private String ssn;
-
     @Column(name = "ssn_hash", nullable = true)
-    private String ssnHash;
+    private String ssn;
 
     @Column(name = "dob", nullable = true)
     private Date dob;
@@ -98,13 +91,5 @@ public class Consumer {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getSsnHash() {
-        return ssnHash;
-    }
-
-    public void setSsnHash(String ssnHash) {
-        this.ssnHash = ssnHash;
     }
 }
