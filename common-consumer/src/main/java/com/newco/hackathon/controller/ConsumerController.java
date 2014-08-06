@@ -7,6 +7,10 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.newco.hackathon.service.ErrorService;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newco.hackathon.model.Consumer;
+import com.newco.hackathon.service.ConsumerService;
 import com.newco.hackathon.model.Consumer;
 import com.newco.hackathon.service.ConsumerService;
 
@@ -85,4 +91,13 @@ public class ConsumerController {
     public String handleValidationException(ConstraintViolationException ex, HttpServletRequest request) throws JsonProcessingException {
         return errorService.formatError(ex.getConstraintViolations());
     }
+
+    @RequestMapping(value = "/search/{firstName}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @Transactional(readOnly = true)
+    public @ResponseBody List<Consumer> searchConsumers(
+            @PathVariable String firstName) {
+        return consumerService.byFirstName(firstName);
+    }
+
 }
