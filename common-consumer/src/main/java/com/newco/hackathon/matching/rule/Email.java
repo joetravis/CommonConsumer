@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
 @Service
@@ -30,7 +31,11 @@ public class Email extends AbstractMatchRule {
         SearchQuery searchQuery;
         try {
             searchQuery = new NativeSearchQueryBuilder()
-                    .withQuery(matchQuery("email", consumer.getEmail()))
+                    .withQuery(
+                            boolQuery()
+                            .must(matchQuery("email", consumer.getEmail()))
+                            .must(matchQuery("firstName", consumer.getFirstName()))
+                            .must(matchQuery("lastName", consumer.getLastName())))
                     .withPageable(new PageRequest(0, 10))
                     .build();
 
