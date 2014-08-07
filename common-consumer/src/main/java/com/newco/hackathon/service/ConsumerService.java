@@ -1,6 +1,7 @@
 package com.newco.hackathon.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.newco.hackathon.datatype.New;
 import com.newco.hackathon.matching.Manager;
 import com.newco.hackathon.model.Address;
 import com.newco.hackathon.model.Consumer;
@@ -9,7 +10,6 @@ import com.newco.hackathon.repository.ConsumerRepository;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +31,9 @@ public class ConsumerService {
     @Inject
     private ConsumerElasticSearchRepository consumerElasticSearchRepository;
 
+    @Inject
+    private PublishService publishService;
+
     @Autowired
     private Manager matchManager;
 
@@ -44,10 +47,13 @@ public class ConsumerService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Consumer save(Consumer consumer) throws Exception {
+        New consumerInfo = new New(consumer.getId() == null);
         // todo Find a better way to do this
         consumer.getAddress().setConsumer(consumer);
 
-        checkForDuplicate(consumer);
+        if (consumerInfo.isNew()) {
+            checkForDuplicate(consumer);
+        }
 
         if (consumer.getSsn() != null && !consumer.getSsn().isEmpty()) {
 
@@ -60,6 +66,7 @@ public class ConsumerService {
         }
 
         consumer = consumerRepository.save(consumer);
+        publishUpsert(consumer, consumerInfo);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -68,6 +75,14 @@ public class ConsumerService {
                 .execute()
                 .actionGet();
         return consumer;
+    }
+
+    private void publishUpsert(final Consumer consumer, final New consumerInfo) {
+        if (consumerInfo.isNew()) {
+            publishService.created(consumer);
+            return;
+        }
+        publishService.updated(consumer);
     }
 
     private void checkForDuplicate(final Consumer consumer) {
@@ -97,6 +112,7 @@ public class ConsumerService {
 
     public void remove(Consumer consumer) {
         consumerRepository.delete(consumer);
+        publishService.deleted(consumer);
     }
 
     public String hashSsn(Consumer consumer) throws Exception {

@@ -85,6 +85,12 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
+      <!-- Spring Rabbit -->
+      <dependency>
+          <groupId>org.springframework.amqp</groupId>
+          <artifactId>spring-rabbit</artifactId>
+          <version>1.3.2.RELEASE</version>
+      </dependency>
 
     <!-- Spring Persistence -->
     <dependency>
