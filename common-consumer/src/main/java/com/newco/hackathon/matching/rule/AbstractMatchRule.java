@@ -24,11 +24,13 @@ public abstract class AbstractMatchRule implements MatchRule {
     @Autowired
     private ObjectMapper mapper;
 
+    private Float factor = 1.0F;
+
     protected void parseHits(final List<Match> matches, final SearchResponse response) throws java.io.IOException {
         for (SearchHit hit : response.getHits().hits()) {
             Match match = new Match();
             match.setConsumer(mapper.readValue(hit.getSourceAsString(), Consumer.class));
-            match.setSimilarity(hit.getScore());
+            match.setSimilarity(hit.getScore() * factor);
             matches.add(match);
         }
     }
@@ -44,5 +46,9 @@ public abstract class AbstractMatchRule implements MatchRule {
 
     public Client getClient() {
         return client;
+    }
+
+    protected void setFactor(Float factor) {
+        this.factor = factor;
     }
 }
