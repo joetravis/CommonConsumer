@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.newco.hackathon.model.Consumer;
 import com.newco.hackathon.service.ConsumerService;
 import com.newco.hackathon.service.ErrorService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,13 @@ public class ConsumerController {
     @ExceptionHandler(ConstraintViolationException.class)
     public String handleValidationException(ConstraintViolationException ex, HttpServletRequest request) throws JsonProcessingException {
         return errorService.formatError(ex.getConstraintViolations());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
+        Throwable original = ex.getRootCause();
+        return original.getMessage();
     }
 
     @RequestMapping(value = "/search/{firstName}", method = RequestMethod.GET)
