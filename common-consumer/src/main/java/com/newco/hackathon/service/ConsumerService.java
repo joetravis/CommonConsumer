@@ -1,12 +1,15 @@
 package com.newco.hackathon.service;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.model.Consumer;
+import com.newco.hackathon.model.Match;
 import com.newco.hackathon.repository.ConsumerElasticSearchRepository;
 import com.newco.hackathon.repository.ConsumerRepository;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.DefaultResultMapper;
@@ -21,12 +24,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 
 @Service
@@ -88,8 +94,9 @@ public class ConsumerService {
                 .findByFirstName(firstName);
     }
 
-    public List<Consumer> byConsumer(Consumer consumer) {
-
+    public List byConsumer(Consumer consumer) throws IOException {
+        List<Match> matches = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(fuzzyQuery("lastName", consumer.getLastName()).fuzziness(Fuzziness.TWO))
                 .withPageable(new PageRequest(0, 10))
@@ -100,8 +107,15 @@ public class ConsumerService {
                 .execute()
                 .actionGet();
 
-        List<Consumer> results = resultsMapper.mapResults(response, Consumer.class, searchQuery.getPageable()).getContent();
-        return results;
+        for (SearchHit hit : response.getHits().hits()) {
+            Match match = new Match();
+            match.setConsumer(mapper.readValue(hit.getSourceAsString(), Consumer.class));
+            match.setSimilarity(hit.getScore());
+            matches.add(match);
+        }
+
+//        List<Consumer> results = resultsMapper.mapResults(response, Consumer.class, searchQuery.getPageable()).getContent();
+        return matches;
     }
 
     public void remove(Consumer consumer) {

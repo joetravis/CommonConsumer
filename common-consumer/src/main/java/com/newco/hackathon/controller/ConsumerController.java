@@ -101,7 +101,7 @@ public class ConsumerController {
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     @Transactional(readOnly = true)
-    public @ResponseBody List<Consumer> searchConsumer(
+    public @ResponseBody List searchConsumer(
             @Valid @RequestBody final Consumer consumer,
             final BindingResult bindingResult) throws Exception {
         return consumerService.byConsumer(consumer);
