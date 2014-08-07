@@ -2,6 +2,7 @@ package com.newco.hackathon.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.matching.Manager;
+import com.newco.hackathon.matching.rule.FirstLNameLastName;
 import com.newco.hackathon.matching.rule.MatchRule;
 import com.newco.hackathon.matching.rule.SsnLastName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,15 @@ public class AppConfig {
     @Autowired
     private SsnLastName ssnLastName;
 
+    @Autowired
+    private FirstLNameLastName firstLNameLastName;
+
     @Bean
     public Manager getMatchManager() {
         Manager manager = new Manager();
         manager.setRules(new MatchRule[] {
-                ssnLastName
+                ssnLastName,
+                firstLNameLastName
         });
 
         return manager;
@@ -27,6 +32,11 @@ public class AppConfig {
     @Bean
     public SsnLastName getSsnLastNameRule() {
         return new SsnLastName();
+    }
+
+    @Bean
+    public FirstLNameLastName getFirstLNameLastName() {
+        return new FirstLNameLastName();
     }
 
     @Bean

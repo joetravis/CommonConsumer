@@ -51,12 +51,7 @@ public class ConsumerService {
             Matcher matcher = pattern.matcher(consumer.getSsn());
 
             if (matcher.find()) {
-                try {
-                    MessageDigest md5 = MessageDigest.getInstance("MD5");
-                    consumer.setSsn(md5.digest(consumer.getSsn().getBytes()).toString());
-                } catch (NoSuchAlgorithmException e) {
-                    throw new Exception("Unable to hash SSN", e);
-                }
+                consumer.setSsn(hashSsn(consumer));
             }
         }
 
@@ -82,5 +77,23 @@ public class ConsumerService {
 
     public void remove(Consumer consumer) {
         consumerRepository.delete(consumer);
+    }
+
+    public String hashSsn(Consumer consumer) throws Exception {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+
+            byte[] hash = md5.digest(consumer.getSsn().getBytes("UTF-8"));
+            //converting byte array to Hexadecimal String
+            StringBuilder sb = new StringBuilder(2*hash.length);
+
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b&0xff));
+            }
+
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new Exception("Unable to hash SSN", e);
+        }
     }
 }

@@ -1,34 +1,37 @@
 package com.newco.hackathon.matching.rule;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.model.Consumer;
 import com.newco.hackathon.model.Match;
-import com.newco.hackathon.service.ConsumerService;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
+/**
+ * Created by travisj on 8/6/14.
+ */
 @Service
-public class SsnLastName extends AbstractMatchRule {
-    @Autowired
-    ConsumerService consumerService;
-    
+public class FirstLNameLastName extends AbstractMatchRule {
     @Override
-    public List<Match> match(Consumer consumer) {
+    public List<Match> match(final Consumer consumer) {
         List<Match> matches = new ArrayList<>();
         SearchQuery searchQuery;
         try {
             searchQuery = new NativeSearchQueryBuilder()
                     .withQuery(
                             boolQuery()
-                                    .must(matchQuery("ssn", consumerService.hashSsn(consumer)))
+                                    .must(matchQuery("firstName", consumer.getFirstName()))
                                     .must(matchQuery("lastName", consumer.getLastName()))
                     )
                     .withPageable(new PageRequest(0, 10))
