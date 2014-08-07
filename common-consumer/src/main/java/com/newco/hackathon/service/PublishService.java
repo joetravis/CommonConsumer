@@ -16,15 +16,11 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
-/**
- * Created by travisj on 8/7/14.
- */
 @Service
 public class PublishService {
-    /**
-     * Constant that represents the property holding the consumer id.
-     */
-    public static final String PROPERTY_ID = "id";
+    public static final String createExchange = "hackathon.create";
+    public static final String updateExchange = "hackathon.update";
+    public static final String deleteExchange = "hackathon.delete";
 
     /**
      * Constant that represents the content type for messages.
@@ -37,30 +33,21 @@ public class PublishService {
     @Autowired
     private ObjectMapper mapper;
 
-    @Inject
-    private Queue commonConsumerCreate;
-
-    @Inject
-    private Queue commonConsumerDelete;
-
-    @Inject
-    private Queue commonConsumerUpdate;
-
     public void created(final Consumer consumer) {
-        send(commonConsumerCreate, consumer);
+        send(createExchange, consumer);
     }
 
     public void deleted(final Consumer consumer) {
-        send(commonConsumerDelete, consumer);
+        send(deleteExchange, consumer);
     }
 
     public void updated(final Consumer consumer) {
-        send(commonConsumerUpdate, consumer);
+        send(updateExchange, consumer);
     }
 
-    private void send(Queue queue, Consumer consumer) {
+    private void send(String exchangeName, Consumer consumer) {
         try {
-            amqpTemplate.convertAndSend(queue.getName(), formatConsumer(consumer));
+            amqpTemplate.convertAndSend(exchangeName, "#", formatConsumer(consumer));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

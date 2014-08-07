@@ -1,10 +1,8 @@
 package com.newco.hackathon.configuration;
 
-import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 
 import java.io.IOException;
 
-/**
- * Created by travisj on 8/7/14.
- */
 @Configuration
 @PropertySource("classpath:queue.properties")
 public class RabbitConfig {
@@ -69,7 +64,11 @@ public class RabbitConfig {
      */
     @Bean(name = "amqpAdmin")
     public AmqpAdmin getAmqpAdmin() throws IOException {
-        return new RabbitAdmin(getQueueConnectionFactory());
+        AmqpAdmin admin = new RabbitAdmin(getQueueConnectionFactory());
+        admin.declareExchange(new FanoutExchange(createName, false, true));
+        admin.declareExchange(new FanoutExchange(updateName, false, true));
+        admin.declareExchange(new FanoutExchange(deleteName, false, true));
+        return admin;
     }
 
     /**
@@ -85,41 +84,5 @@ public class RabbitConfig {
         connectionFactory.setUsername(queueUser);
         connectionFactory.setPassword(queuePassword);
         return connectionFactory;
-    }
-
-    @Bean
-     public Queue commonConsumerCreate() throws IOException {
-        Connection connection = getQueueConnectionFactory().createConnection();
-        Channel channel = connection.createChannel(true);
-        channel.exchangeDeclare(createName, "fanout");
-        Queue queue = new Queue(createName);
-        getAmqpAdmin().declareQueue(queue);
-        /*binding the created queue to exchange*/
-        channel.queueBind(queue.getName(), createName, "");
-        return queue;
-    }
-
-    @Bean
-    public Queue commonConsumerDelete() throws IOException {
-        Connection connection = getQueueConnectionFactory().createConnection();
-        Channel channel = connection.createChannel(true);
-        channel.exchangeDeclare(deleteName, "fanout");
-        Queue queue = new Queue(deleteName);
-        getAmqpAdmin().declareQueue(queue);
-        /*binding the created queue to exchange*/
-        channel.queueBind(queue.getName(), deleteName, "");
-        return queue;
-    }
-
-    @Bean
-    public Queue commonConsumerUpdate() throws IOException {
-        Connection connection = getQueueConnectionFactory().createConnection();
-        Channel channel = connection.createChannel(true);
-        channel.exchangeDeclare(updateName, "fanout");
-        Queue queue = new Queue(updateName);
-        getAmqpAdmin().declareQueue(queue);
-        /*binding the created queue to exchange*/
-        channel.queueBind(queue.getName(), updateName, "");
-        return queue;
     }
 }
