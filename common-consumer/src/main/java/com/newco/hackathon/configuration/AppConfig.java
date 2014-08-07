@@ -2,6 +2,7 @@ package com.newco.hackathon.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.matching.Manager;
+import com.newco.hackathon.matching.rule.Email;
 import com.newco.hackathon.matching.rule.FirstLNameLastName;
 import com.newco.hackathon.matching.rule.MatchRule;
 import com.newco.hackathon.matching.rule.SsnLastName;
@@ -18,11 +19,15 @@ public class AppConfig {
     @Autowired
     private FirstLNameLastName firstLNameLastName;
 
+    @Autowired
+    private Email emailRule;
+
     @Bean
     public Manager getMatchManager() {
         Manager manager = new Manager();
         manager.setRules(new MatchRule[] {
                 ssnLastName,
+                emailRule,
                 firstLNameLastName
         });
 
@@ -37,6 +42,11 @@ public class AppConfig {
     @Bean
     public FirstLNameLastName getFirstLNameLastName() {
         return new FirstLNameLastName();
+    }
+
+    @Bean
+    public Email getEmail() {
+        return new Email();
     }
 
     @Bean
