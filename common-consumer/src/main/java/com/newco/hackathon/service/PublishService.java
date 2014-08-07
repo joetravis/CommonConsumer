@@ -25,7 +25,7 @@ public class PublishService {
     /**
      * Constant that represents the content type for messages.
      */
-    public static final String CONTENT_TYPE = "text/plain";
+    public static final String CONTENT_TYPE = "application/json";
 
     @Autowired
     private AmqpTemplate amqpTemplate;
