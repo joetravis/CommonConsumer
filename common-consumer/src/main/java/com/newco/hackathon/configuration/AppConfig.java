@@ -1,12 +1,15 @@
 package com.newco.hackathon.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.newco.hackathon.SimpleCORSFilter;
 import com.newco.hackathon.matching.Manager;
 import com.newco.hackathon.matching.rule.MatchRule;
 import com.newco.hackathon.matching.rule.SsnLastName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.servlet.Filter;
 
 @Configuration
 public class AppConfig {
@@ -32,5 +35,10 @@ public class AppConfig {
     @Bean
     public ObjectMapper getObjectMapper() {
         return new ObjectMapper();
+    }
+
+    @Bean
+    public Filter getCORSFilter() {
+        return new SimpleCORSFilter();
     }
 }

@@ -1,15 +1,9 @@
 package com.newco.hackathon.controller;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.newco.hackathon.model.Match;
+import com.newco.hackathon.model.Consumer;
+import com.newco.hackathon.service.ConsumerService;
 import com.newco.hackathon.service.ErrorService;
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.newco.hackathon.model.Consumer;
-import com.newco.hackathon.service.ConsumerService;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/consumers")
