@@ -10,12 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
-/**
- * Created by travisj on 8/6/14.
- */
 @Service
 public class Email extends AbstractMatchRule {
 
@@ -26,6 +22,11 @@ public class Email extends AbstractMatchRule {
     @Override
     public List<Match> match(final Consumer consumer) {
         List<Match> matches = new ArrayList<>();
+
+        if (consumer.getEmail() == null || consumer.getEmail().isEmpty()) {
+            return matches;
+        }
+
         SearchQuery searchQuery;
         try {
             searchQuery = new NativeSearchQueryBuilder()

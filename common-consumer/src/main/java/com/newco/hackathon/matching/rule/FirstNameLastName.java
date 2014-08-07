@@ -22,7 +22,7 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
  * Created by travisj on 8/6/14.
  */
 @Service
-public class FirstLNameLastName extends AbstractMatchRule {
+public class FirstNameLastName extends AbstractMatchRule {
     @Override
     public List<Match> match(final Consumer consumer) {
         List<Match> matches = new ArrayList<>();

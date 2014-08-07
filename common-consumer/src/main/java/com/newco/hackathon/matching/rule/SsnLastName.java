@@ -27,6 +27,13 @@ public class SsnLastName extends AbstractMatchRule {
     @Override
     public List<Match> match(Consumer consumer) {
         List<Match> matches = new ArrayList<>();
+
+        if (consumer.getSsn() == null || consumer.getLastName() == null
+                || consumer.getSsn().isEmpty() || consumer.getLastName().isEmpty()
+        ) {
+            return matches;
+        }
+
         SearchQuery searchQuery;
         try {
             searchQuery = new NativeSearchQueryBuilder()
