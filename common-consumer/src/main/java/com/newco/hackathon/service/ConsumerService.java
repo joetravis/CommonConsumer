@@ -2,11 +2,13 @@ package com.newco.hackathon.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.matching.Manager;
+import com.newco.hackathon.model.Address;
 import com.newco.hackathon.model.Consumer;
 import com.newco.hackathon.repository.ConsumerElasticSearchRepository;
 import com.newco.hackathon.repository.ConsumerRepository;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -45,6 +47,8 @@ public class ConsumerService {
         // todo Find a better way to do this
         consumer.getAddress().setConsumer(consumer);
 
+        checkForDuplicate(consumer);
+
         if (consumer.getSsn() != null && !consumer.getSsn().isEmpty()) {
 
             Pattern pattern = Pattern.compile("^\\d{9}$");
@@ -64,6 +68,22 @@ public class ConsumerService {
                 .execute()
                 .actionGet();
         return consumer;
+    }
+
+    private void checkForDuplicate(final Consumer consumer) {
+        Address address = consumer.getAddress();
+        List consumers = consumerRepository.findByConsumerAndAddress(
+                consumer.getFirstName(),
+                consumer.getLastName(),
+                address.getLine1(),
+                address.getCity(),
+                address.getState(),
+                address.getPostalCode()
+        );
+
+        if (consumers.size() > 0) {
+            throw new DataIntegrityViolationException("Consumer name and address already exist.");
+        }
     }
 
     public List<Consumer> byFirstName(String firstName) {

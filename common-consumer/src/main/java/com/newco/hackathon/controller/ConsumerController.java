@@ -50,7 +50,14 @@ public class ConsumerController {
     public @ResponseBody ResponseEntity createConsumer(
             @Valid @RequestBody final Consumer consumer,
             final BindingResult bindingResult) throws Exception {
-        return new ResponseEntity(consumerService.save(consumer), HttpStatus.OK);
+        Consumer savedConsumer;
+        try {
+            savedConsumer = consumerService.save(consumer);
+        } catch (DataIntegrityViolationException exception) {
+            return new ResponseEntity(exception.getMessage(), HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity(savedConsumer, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{consumerId}", method = RequestMethod.DELETE)
