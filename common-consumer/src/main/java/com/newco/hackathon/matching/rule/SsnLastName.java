@@ -3,6 +3,8 @@ package com.newco.hackathon.matching.rule;
 import com.newco.hackathon.model.Consumer;
 import com.newco.hackathon.model.Match;
 import com.newco.hackathon.service.ConsumerService;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -28,20 +30,22 @@ public class SsnLastName extends AbstractMatchRule {
     public List<Match> match(Consumer consumer) {
         List<Match> matches = new ArrayList<>();
 
-        if (consumer.getSsn() == null || consumer.getLastName() == null
-                || consumer.getSsn().isEmpty() || consumer.getLastName().isEmpty()
-        ) {
+        if (consumer.getSsn() == null || consumer.getSsn().isEmpty()) {
             return matches;
         }
 
         SearchQuery searchQuery;
         try {
+
+            BoolQueryBuilder query = boolQuery()
+                    .must(matchQuery("ssn", consumerService.hashSsn(consumer)).boost(15f));
+
+            if (consumer.getLastName() != null && !consumer.getLastName().isEmpty()) {
+                query.should(matchQuery("lastName", consumer.getLastName()));
+            }
+
             searchQuery = new NativeSearchQueryBuilder()
-                    .withQuery(
-                            boolQuery()
-                                    .must(matchQuery("ssn", consumerService.hashSsn(consumer)))
-                                    .must(matchQuery("lastName", consumer.getLastName()))
-                    )
+                    .withQuery(query)
                     .withPageable(new PageRequest(0, 10))
                     .build();
 
