@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS consumer.consumer(
 );
 
 ALTER TABLE consumer.consumer add CONSTRAINT IF NOT EXISTS "CONSUMER_SSN" unique (ssn_hash);
+ALTER TABLE consumer.consumer add CONSTRAINT IF NOT EXISTS "CONSUMER_NAME_EMAIL" unique (first_name, last_name, email);
 
 -- DROP TABLE IF EXISTS consumer.address;
 
