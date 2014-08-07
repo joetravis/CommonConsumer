@@ -19,6 +19,10 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 public class SsnLastName extends AbstractMatchRule {
     @Autowired
     ConsumerService consumerService;
+
+    public SsnLastName() {
+        setFactor(2.5f);
+    }
     
     @Override
     public List<Match> match(Consumer consumer) {

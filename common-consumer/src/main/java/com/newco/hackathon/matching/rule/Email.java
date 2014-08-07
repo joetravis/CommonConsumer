@@ -18,6 +18,11 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
  */
 @Service
 public class Email extends AbstractMatchRule {
+
+    public Email() {
+        setFactor(1.5f);
+    }
+
     @Override
     public List<Match> match(final Consumer consumer) {
         List<Match> matches = new ArrayList<>();
