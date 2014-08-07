@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newco.hackathon.SimpleCORSFilter;
 import com.newco.hackathon.matching.Manager;
 import com.newco.hackathon.matching.rule.Email;
-import com.newco.hackathon.matching.rule.FirstLNameLastName;
+import com.newco.hackathon.matching.rule.FirstNameLastName;
 import com.newco.hackathon.matching.rule.MatchRule;
 import com.newco.hackathon.matching.rule.SsnLastName;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,22 +15,13 @@ import javax.servlet.Filter;
 @Configuration
 public class AppConfig {
 
-    @Autowired
-    private SsnLastName ssnLastName;
-
-    @Autowired
-    private FirstLNameLastName firstLNameLastName;
-
-    @Autowired
-    private Email emailRule;
-
     @Bean
     public Manager getMatchManager() {
         Manager manager = new Manager();
         manager.setRules(new MatchRule[] {
-                ssnLastName,
-                emailRule,
-                firstLNameLastName
+                getSsnLastNameRule(),
+                getEmailRule(),
+                getFirstNameLastNameRule()
         });
 
         return manager;
@@ -43,12 +33,12 @@ public class AppConfig {
     }
 
     @Bean
-    public FirstLNameLastName getFirstLNameLastName() {
-        return new FirstLNameLastName();
+    public FirstNameLastName getFirstNameLastNameRule() {
+        return new FirstNameLastName();
     }
 
     @Bean
-    public Email getEmail() {
+    public Email getEmailRule() {
         return new Email();
     }
 
