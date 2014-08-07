@@ -1,5 +1,6 @@
 package com.newco.hackathon.application;
 
+import com.newco.hackathon.configuration.AppConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +21,7 @@ import com.newco.hackathon.repository.ConsumerRepository;
 @EnableJpaRepositories(basePackageClasses = { ConsumerRepository.class })
 @ComponentScan({ "com.newco.hackathon.controller",
         "com.newco.hackathon.service" })
-@Import({ ControllerConfig.class, DataSourceConfig.class, HibernateConfig.class })
+@Import({ ControllerConfig.class, DataSourceConfig.class, HibernateConfig.class, AppConfig.class})
 @ImportResource("classpath:META-INF/elasticsearchContext.xml")
 public class RestApplication {
 
